@@ -122,12 +122,19 @@ These parameters use regex patterns to validate various aspects of commits and p
 
 ### 4. Commit Message Subject Pattern
 ```regex
-^(([A-Z0-9]{2,10}-[0-9]+)(, [A-Z0-9]{2,10}-[0-9]+)*: )?\b(?!Made)(?![A-Za-z]*(ing|ung|ang|ed|id|[^s]s)\b)[A-Z][a-z]*\b [/\- ._,()A-Za-z0-9]*[)A-Za-z0-9]$
+^(Merge branch .*|(([A-Z0-9]{2,10}-[0-9]+)(, [A-Z0-9]{2,10}-[0-9]+)*: )?\b(?!Made)(?![A-Za-z]*(ing|ung|ang|ed|id|[^s]s)\b)[A-Z][a-z]*\b [/\- ._,()A-Za-z0-9]*[)A-Za-z0-9])$
 ```
 
-**What it does:** Validates commit message subjects with optional ticket references and specific formatting rules.
+**What it does:** Validates commit message subjects with optional ticket references and specific formatting rules, with special handling for merge commits.
 
 **Plain English Rules:**
+
+**Option 1: Merge Branch Messages**
+- **Any message starting with "Merge branch"** is automatically allowed
+- **No length restrictions** for merge messages
+- **No formatting requirements** for merge messages
+
+**Option 2: Regular Commit Messages**
 1. **Optional ticket reference(s):**
    - Format: `PROJ-123: ` or `ABC-456, DEF-789: `
    - 2-10 uppercase letters/numbers, dash, then numbers
@@ -145,6 +152,9 @@ These parameters use regex patterns to validate various aspects of commits and p
    - **Must end with a letter, number, or closing parenthesis**
 
 **Valid Examples:**
+- ✅ `Merge branch 'feature/user-authentication' into main`
+- ✅ `Merge branch 'bugfix/login-validation'`
+- ✅ `Merge branch 'develop' into 'release/v2.1'`
 - ✅ `Fix login bug in authentication module`
 - ✅ `Add new user registration feature`
 - ✅ `PROJ-123: Update database schema for users`
