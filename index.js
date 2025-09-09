@@ -107,11 +107,16 @@ async function run() {
         core.setFailed(`Commit has no valid signature (${commit.sha.substr(0, 7)})`)
 
       // Check commit message subject
-      if (commitMessageSubjectMinLength != -1 && commitMessageSubject.length < commitMessageSubjectMinLength)
-        core.setFailed(`Commit message subject is too short (${commit.sha.substr(0, 7)})`)
+      // Skip length validation for merge commits
+      const isMergeCommit = commitMessageSubject.startsWith('Merge branch')
+      
+      if (!isMergeCommit) {
+        if (commitMessageSubjectMinLength != -1 && commitMessageSubject.length < commitMessageSubjectMinLength)
+          core.setFailed(`Commit message subject is too short (${commit.sha.substr(0, 7)})`)
 
-      if (commitMessageSubjectMaxLength != -1 && commitMessageSubject.length > commitMessageSubjectMaxLength)
-        core.setFailed(`Commit message subject is too long (${commit.sha.substr(0, 7)})`)
+        if (commitMessageSubjectMaxLength != -1 && commitMessageSubject.length > commitMessageSubjectMaxLength)
+          core.setFailed(`Commit message subject is too long (${commit.sha.substr(0, 7)})`)
+      }
 
       if (!regexCommitMessageSubject.test(commitMessageSubject))
         core.setFailed(`Commit message subject does not match regex (${commit.sha.substr(0, 7)})`)
