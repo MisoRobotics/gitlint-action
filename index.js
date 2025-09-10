@@ -1,3 +1,4 @@
+
 const core = require('@actions/core')
 const github = require('@actions/github')
 
@@ -107,7 +108,7 @@ async function run() {
         core.setFailed(`Commit has no valid signature (${commit.sha.substr(0, 7)})`)
 
       // Check commit message subject
-      const isMergeCommit = commitMessageSubject.startsWith('Merge branch')
+      const isMergeCommit = commitMessageSubject.startsWith('Merge branch') || commitMessageSubject.startsWith('Merge pull request')
       
       if (isMergeCommit) {
         // Special length validation for merge commits: min 20, max 140
